@@ -1,0 +1,13 @@
+<% for(const doctor of data){%>
+    <tr>
+        <td><%=doctor.documentId%></td>
+        <td><%=doctor.medicalRecord%></td>
+        <td><%=doctor.name%></td>
+        <% if (doctor && doctor.speciality) { %>
+            <td><%=doctor.speciality.name%></td>
+        <%}else{%>
+            <td></td>
+        <%}%>
+        <td class="text-center"><button type="button" class="btn btn-info">Editar</button></td>
+    </tr>
+<%}%>

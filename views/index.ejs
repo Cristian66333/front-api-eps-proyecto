@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%-include('./templates/header.ejs')%>
+    </head>
+    <body style="background-color: rgba(76, 199, 230, 0.6);">
+
+        <nav class="navbar navbar-light" style="background-color: white;">
+            <%-include('./templates/navMain.ejs')%>
+        </nav>
+        
+        <main><br>
+            <div class="container" style="background-color: white;">
+                <h3 style="text-align: center;">Sistema de Información para Asignación de Consultorios</h3>
+                <br>
+                <div class="row">
+                    <div class="col-5">
+                        <img src="/img/principal.jpg" alt="Logo Evaluacion EJS">
+                    </div>
+                    <div class="col-7" >
+                        <p style="text-align: justify;">
+                            Es una herramienta diseñada para gestionar eficientemente la asignación de consultorios en una organización 
+                            o institución médica. Este sistema permite automatizar y agilizar el proceso de programación y asignación de 
+                            consultorios a los médicos o profesionales de la salud, optimizando así la administración y utilización de los 
+                            espacios disponibles.<br><br>
+
+                            Mediante este sistema, se puede llevar un registro centralizado de los consultorios disponibles, sus características 
+                            y disponibilidad horaria. Además, se facilita la gestión de los médicos y profesionales, permitiendo asignarles 
+                            consultorios de acuerdo a sus necesidades y especialidades.<br><br>
+
+                            Este tipo de sistema ofrece beneficios como la reducción de errores humanos en la asignación, la optimización del 
+                            uso de los consultorios, la generación de informes y reportes sobre la ocupación y disponibilidad de los espacios, 
+                            y la mejora en la comunicación y coordinación entre los profesionales y el personal encargado de la asignación.<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="footer" style="position: relative; bottom:0; left: 0; width: 100%; height: 50px; background-color: #16254C;">
+            <%-include('./templates/footer.ejs')%>
+        </footer>
+    </body>
+</html>

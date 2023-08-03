@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%-include('../templates/header.ejs')%>
+    </head>
+    <body style="background-color: rgba(76, 199, 230, 0.6);">
+
+        <nav class="navbar navbar-light" style="background-color: white;">
+            <%-include('../templates/navMainOnLogin.ejs')%>
+        </nav><br>
+        
+        <main><br>
+            <div class="container" style="background-color: white;">
+                <nav class="navbar navbar-light" style="background-color: rgba(217, 217, 217, 0.7);">
+                    <%-include('../templates/navAdm.ejs', { currentPage: currentPage })%>
+                </nav><br>
+                <h3 style="text-align: center;">Realizar Asignación de Consultorios</h3>
+                <div class="col-6" style="text-align: left;">
+                    <button class="btn btn primary" style="background-color: #4C75E6; color: white;" data-bs-toggle="modal" data-bs-target="#modalAsignar">Realizar Nueva Asignación</button>
+                </div><br>
+                <div class="container">
+                    <div class="table-responsive"></div>
+                        <div class="table-responsive" id="mydatatable-container">
+                            <table id="tablaAsignacion" class="table table-striped table-bordered ">
+                                <thead>
+                                    <tr>
+                                        <th>N° Consultorio</th>
+                                        <th>Piso</th>
+                                        <th>N° Documento Médico</th>
+                                        <th>Nombre Médico</th>
+                                        <th>Especialidad</th>
+                                        <th>Fecha</th>
+                                        <th>Hora Inicio</th>
+                                        <th>Hora Fin</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <% for (const assignments of data) { %>
+                                        <% if (assignments.assignments.length != 0) { %>
+                                            <% for (const v of assignments.assignments) { %>
+                                                <tr>
+                                                    <td><%= assignments.numberOffice %></td>
+                                                    <td><%= assignments.floor %></td>
+                                                   
+                                                    <% for (const n of dataMedico) { %>
+                                                        <% if (n._id == v.documentDoctorId) { %>
+                                                            <td><%= n.documentId %></td>
+                                                            <td><%= n.name %></td>
+                                                            <td><%= n.speciality.name %></td>
+                                                            <% break; %>
+                                                        <% } %>
+                                                    <% } %>
+                                                    <% var fecha = v.date.split('T')[0] %>
+                                                    
+                                                    <td><%= fecha %></td>
+                                                    <% var fecha2 = v.inicio.split('T')[1].substring(0,5); %>
+                                                    <td><%= fecha2 %></td>
+                                                    <% var fecha3 = v.fin.split('T')[1].substring(0,5); %>
+                                                    <td><%= fecha3 %></td>
+                                                </tr>
+                                            <% } %>
+                                        <% } %>
+                                    <% } %>      
+                                </tbody>
+                                <tfoot class="text-center" style="background: #d78aea; color: black">
+                                    <tr>  
+                                        <th>N° Consultorio</th>
+                                        <th>Piso</th>
+                                        <th>N° Documento Médico</th>
+                                        <th>Nombre Médico</th>
+                                        <th>Especialidad</th>
+                                        <th>Fecha</th>
+                                        <th>Hora Inicio</th>
+                                        <th>Hora Fin</th>
+                                    </tr>
+                                </tfoot>                         
+                            </table><br>
+                        </div>
+                    </div>
+                </div><br>
+            </div>
+            <!-- Modal asignar consultorio -->
+            <div class="modal fade" id="modalAsignar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Asignar consultorio</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/assignOffice" method="POST">
+                            <div class="form-group">
+                              <label for="documentoMedico">Documento Médico:</label>
+                              <input type="number" class="form-control" id="documentoMedico" name="documentoMedico" required>
+                            </div>
+                            <div class="form-group">
+                              <label for="numeroConsultorio">Número de Consultorio:</label>
+                              <select type="text" class="form-control" id="numeroConsultorio" name="numeroConsultorio" required>
+                                <% for (const obj of consultorios) { %>
+                                    <option><%= obj.numberOffice %></option>
+                                  <% } %>                                
+                              </select> 
+                            </div>
+                            <div class="form-group">
+                              <label for="fecha">Fecha:</label>
+                              <input type="date" data-date-format="DD-MM-YYYY" class="form-control" id="fecha" name="fecha" required>
+                            </div>
+                            <div class="form-group">
+                              <label>Turno:</label>
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" name="turno" id="turno1" value="8-13" required>
+                                <label class="form-check-label" for="turno1">8-13pm</label>
+                              </div>
+                              <div class="form-check">
+                                <input class="form-check-input" type="radio" name="turno" id="turno2" value="13-20" required>
+                                <label class="form-check-label" for="turno2">13-20pm</label>
+                              </div>
+                            </div>
+                          
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">cerrar</button>
+                    <button type="submit" class="btn btn-primary">Asignar</button>
+                </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <script>
+                // Obtener la fecha actual
+                var today = new Date();
+
+                // Calcular la fecha de mañana
+                var tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+
+                // Formatear la fecha de mañana en el formato "AAAA-MM-DD"
+                var tomorrowFormatted = tomorrow.toISOString().split('T')[0];
+
+                // Asignar la fecha de mañana como el valor mínimo del campo de entrada de fecha
+                document.getElementById("fecha").min = tomorrowFormatted;
+            </script>
+            
+            <%if(msg!=""){%>
+                <script>
+                    Swal.fire('<%=msg%>')
+                </script>
+            <%}%>
+        </main>
+
+        <!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <link rel="stylesheet" href= "https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+
+        <script src="https://code.jquery.com/jquery-3.5.1.js"> </script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"> </script>
+        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"> </script>
+
+        <script>
+            window.addEventListener("pageshow", function (event) {
+                let historyTraversal = event.persisted ||
+                    (typeof window.performance != "undefined" &&
+                    window.performance.navigation.type === 2);
+                if (historyTraversal) {
+                    window.location.reload();
+                }
+            });
+        </script>                
+        
+        <script>
+            $(document).ready(function () {
+                $('#tablaAsignacion').DataTable();
+            });
+        </script>
+
+        <footer class="footer" style="position: relative; bottom:0; left: 0; width: 100%; height: 50px; background-color: #16254C;">
+            <%-include('../templates/footer.ejs')%>
+        </footer>
+    </body>
+</html>

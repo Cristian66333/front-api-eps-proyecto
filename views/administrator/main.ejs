@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%-include('../templates/header.ejs')%>
+    </head>
+    <body style="background-color: rgba(76, 199, 230, 0.6);">
+
+        <nav class="navbar navbar-light" style="background-color: white;">
+            <%-include('../templates/navMainOnLogin.ejs')%>
+        </nav><br>
+        
+        <main><br>
+            <div class="container" style="background-color: white;">
+                <nav class="navbar navbar-light" style="background-color: rgba(217, 217, 217, 0.7);">
+                    <%-include('../templates/navAdm.ejs', { currentPage: currentPage })%>
+                </nav><br>
+                <h3 style="text-align: center;">Administrador</h3>
+                <div class="row">
+                    <p style="text-align: justify; border-right: 50px solid transparent;border-left: 50px solid transparent;">
+                        ¡Bienvenido al Sistema de Asignación de Consultorios Médicos!<br><br>
+
+                        Este sistema está diseñado para facilitar la gestión eficiente de los consultorios en nuestra institución. Como 
+                        administrador, tendrás acceso a poderosas herramientas que te permitirán administrar y asignar consultorios de 
+                        manera efectiva.<br><br>
+
+                        Podrás realizar la gestión del personal médico, asignar consultorios según las necesidades y especialidades de 
+                        los profesionales, y visualizar la asignación de consultorios en tiempo real.<br><br>
+
+                        Estamos seguros de que este sistema te ayudará a optimizar la asignación de consultorios, mejorando la eficiencia
+                         y organización en nuestra institución médica.<br><br>
+
+                        ¡Gracias por ser parte de nuestro equipo y utilizar el Sistema de Asignación de Consultorios Médicos!<br><br>
+                    </p>
+                </div>
+            </div>
+        </main>
+        <footer class="footer" style="position: relative; bottom:0; left: 0; width: 100%; height: 50px; background-color: #16254C;">
+            <%-include('../templates/footer.ejs')%>
+        </footer>
+    </body>
+</html>

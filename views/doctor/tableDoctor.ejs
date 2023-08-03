@@ -1,0 +1,15 @@
+<% for(const assignments of data){ %>
+    <%if(assignments.assignments.length !=0){%>
+        <% for(const v of assignments.assignments){ %>
+            <%if(v.documentDoctorId==doc){%>
+                <tr>
+                    <td><%=assignments.numberOffice%></td>
+                    <td><%=assignments.floor%></td>
+                    <td><%=v.date%></td>
+                    <td><%=v.inicio%></td>
+                    <td><%=v.fin%></td>
+                </tr>
+            <%}%>
+        <%}%>
+    <%}%>
+<%}%>

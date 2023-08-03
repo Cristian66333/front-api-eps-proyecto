@@ -1,0 +1,26 @@
+<% for (const assignments of data) { %>
+    <% if (assignments.assignments.length != 0) { %>
+        <% for (const v of assignments.assignments) { %>
+            <tr>
+                <td><%= assignments.numberOffice %></td>
+                <td><%= assignments.floor %></td>
+               
+                <% for (const n of dataMedico) { %>
+                    <% if (n._id == v.documentDoctorId) { %>
+                        <td><%= n.documentId %></td>
+                        <td><%= n.name %></td>
+                        <td><%= n.speciality.name %></td>
+                        <% break; %>
+                    <% } %>
+                <% } %>
+                <% var fecha = v.date.split('T')[0] %>
+                
+                <td><%= fecha %></td>
+                <% var fecha2 = v.inicio.split('T')[1].substring(0,5); %>
+                <td><%= fecha2 %></td>
+                <% var fecha3 = v.fin.split('T')[1].substring(0,5); %>
+                <td><%= fecha3 %></td>
+            </tr>
+        <% } %>
+    <% } %>
+<% } %>      

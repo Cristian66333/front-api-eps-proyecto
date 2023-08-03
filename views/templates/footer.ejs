@@ -1,0 +1,14 @@
+<script src="js/bootstrap.min.js"></script>
+<p >
+    <h6 style="color: white; border: 2px solid transparent; padding: 10px;">
+        <div class="row">
+            <div class="col-6">
+                &copy; <span id="currentYear"></span> Derechos reservados
+            </div>
+        </div>
+    </h6>
+</p>
+<script>
+    const currentYear = new Date().getFullYear();
+    document.getElementById('currentYear').textContent = currentYear;
+</script>
