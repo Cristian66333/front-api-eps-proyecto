@@ -29,19 +29,39 @@
                               </tr>
                           </thead>
                           <tbody id="tableBody">
-                            <% for(const doctor of data){%>
-                              <tr>
-                                <td><%=doctor.documentId%></td>
-                                <td><%=doctor.medicalRecord%></td>
-                                <td><%=doctor.name%></td>
-                                <% if (doctor && doctor.speciality) { %>
-                                  <td><%=doctor.speciality.name%></td>
-                                <%}else{%>
-                                    <td></td>
-                                <%}%>
-                                <td class="text-center"><button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalUpdate">Editar</button></td>
-                              </tr>
-                            <%}%>
+                            <script>
+                              var table = document.getElementById('tableBody')
+                              fetch("https://api-eps-proyecto.vercel.app/doctors").then(resp=>resp.json())
+                              .then(resp=>{
+                                resp.data.forEach(n => {
+                                  var row = document.createElement('tr')
+                                  var tdDocument = document.createElement('td')
+                                  tdDocument.append(document.createTextNode(n.documentId))
+                                  row.append(tdDocument)
+                                  var tdRecord = document.createElement('td')
+                                  tdRecord.append(document.createTextNode(n.medicalRecord))
+                                  row.append(tdRecord)
+                                  var tdName = document.createElement('td')
+                                  tdName.append(document.createTextNode(n.name))
+                                  row.append(tdName)
+                                  var tdSpeciality = document.createElement('td')
+                                  if(n.speciality){
+                                    tdSpeciality.append(document.createTextNode(n.speciality.name))
+                                  }else{
+                                    tdSpeciality.append(document.createTextNode(n.rol))
+                                  }
+                                  
+                                  row.append(tdSpeciality)
+                                  var tdButton = document.createElement('td')
+                                  tdButton.innerHTML = "<td class=\"text-center\"><button type=\"button\" class=\"btn btn-info\" data-bs-toggle=\"modal\" data-bs-target=\"#modalUpdate\">Editar</button></td>"
+
+                                  row.append(tdButton)
+                                  table.append(row)
+                                });
+                                $('#tablaMedicos').DataTable();
+                              })
+                              
+                            </script>
                           </tbody>
                           <tfoot class="text-center" style="background: #d78aea; color: black">
                             <tr>
@@ -91,10 +111,20 @@
                               </div>
                               <div class="form-group">
                                 <label for="especialidad">Especialidad:</label>
-                                <select type="text" class="form-control" id="especialidad" name="especialidad" required>
-                                  <% for(const especialidad of especialidades) { %>
-                                      <option><%= especialidad.name %></option>
-                                  <% } %>
+                                <select type="text" class="form-control" id="especialidad3" name="especialidad" required>
+                                  <script>
+                                    var select2 = document.getElementById('especialidad3')
+                                    fetch("https://api-eps-proyecto.vercel.app/specialities").then(resp=>resp.json())
+                                    .then(resp =>{
+                                      console.log(resp.data)
+                                      resp.data.forEach(n=>{
+                                        var option= document.createElement('option')
+                                        option.append(document.createTextNode(n.name))
+                                        select2.append(option)
+                                      })
+                                    })
+                                  </script>
+
                                 </select>                              
                               </div>
                               <div class="form-group">
@@ -166,10 +196,18 @@
                               </div>
                               <div class="form-group">
                                 <label for="especialidad">Especialidad:</label>
-                                <select type="text" class="form-control" id="especialidad" name="especialidad" required>
-                                  <% for(const especialidad of especialidades) { %>
-                                      <option><%= especialidad.name %></option>
-                                  <% } %>
+                                <select type="text" class="form-control" id="especialidad2" name="especialidad" required>
+                                  <script>
+                                    var select = document.getElementById('especialidad2')
+                                    fetch("https://api-eps-proyecto.vercel.app/specialities").then(resp=>resp.json())
+                                    .then(resp =>{
+                                      resp.data.forEach(n=>{
+                                        var option= document.createElement('option')
+                                        option.append(document.createTextNode(n.name))
+                                        select.append(option)
+                                      })
+                                    })
+                                  </script>
                                 </select>                              
                               </div>
                               <div class="form-group">
@@ -218,11 +256,6 @@
           });
         </script>                
 
-        <script>
-          $(document).ready(function () {
-            $('#tablaMedicos').DataTable();
-          });
-        </script>
 
         <footer class="footer" style="position: relative; bottom:0; left: 0; width: 100%; height: 50px; background-color: #16254C;">
             <%-include('../templates/footer.ejs')%>

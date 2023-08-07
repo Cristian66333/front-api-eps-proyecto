@@ -12,84 +12,83 @@
         <main><br>
             <div class="container" style="background-color: white;">
                 <nav class="navbar navbar-light" style="background-color: rgba(217, 217, 217, 0.7);">
-                    <%-include('../templates/navAdm.ejs', { currentPage: currentPage })%>
+                    <%-include('../templates/navDoctor.ejs')%>
                 </nav><br>
-                <h3 style="text-align: center;">Ver Asignación de Consultorios</h3>
+                <h3 style="text-align: center;">Visualizar Asignación de citas</h3>
                 <div class="container">
-                    <div class="table-responsive">
+                    <div class="table-responsive"></div>
                         <div class="table-responsive" id="mydatatable-container">
-                            <table id="tablaVisualizacion1" class="table table-striped table-bordered ">
+                            <table id="tablaAsignacion" class="table table-striped table-bordered ">
                                 <thead>
                                     <tr>
                                         <th>N° Consultorio</th>
                                         <th>Piso</th>
-                                        <th>N° Documento Médico</th>
-                                        <th>Nombre Médico</th>
-                                        <th>Especialidad</th>
+                                        
+                                        <th>N° Documento Paciente</th>
+                                        <th>Nombre Paciente</th>
+                                        
                                         <th>Fecha</th>
-                                        <th>Hora Inicio</th>
-                                        <th>Hora Fin</th>
+                                        <th>Hora</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">
+                                    <script src="./js/scriptsNew.js"> </script>
                                     <script>
                                         var table = document.getElementById('tableBody')
-                                        fetch("https://api-eps-proyecto.vercel.app/assigments").then(resp=>resp.json())
+                                        fetch("https://api-eps-proyecto.vercel.app/appointments").then(resp=>resp.json())
                                         .then(resp=>{
                                             console.log(resp)
                                             resp.data.forEach(n => {
+                                                console.log('<%=doc%>')
+                                                if(n.assigment.documentDoctorId._id == '<%=doc%>'){
                                                 var row = document.createElement('tr')
                                                 var tdNumberOffice = document.createElement('td')
-                                                tdNumberOffice.append(document.createTextNode(n.idOffice.numberOffice))
+                                                tdNumberOffice.append(document.createTextNode(n.assigment.idOffice.numberOffice))
                                                 row.append(tdNumberOffice)
                                                 var tdFloor = document.createElement('td')
-                                                tdFloor.append(document.createTextNode(n.idOffice.floor))
+                                                tdFloor.append(document.createTextNode(n.assigment.idOffice.floor))
                                                 row.append(tdFloor)
-                                                var tdDocumentDoctor = document.createElement('td')
-                                                tdDocumentDoctor.append(document.createTextNode(n.documentDoctorId.documentId))
-                                                row.append(tdDocumentDoctor)
-                                                var tdName = document.createElement('td')
-                                                tdName.append(document.createTextNode(n.documentDoctorId.name))
-                                                row.append(tdName)
-                                                var tdSpeciality = document.createElement('td')
-                                                tdSpeciality.append(document.createTextNode(n.documentDoctorId.speciality.name))
-                                                row.append(tdSpeciality)
+                                                var tdPatientDoc = document.createElement('td')
+                                                tdPatientDoc.append(document.createTextNode(n.patient.documentId))
+                                                row.append(tdPatientDoc)
+                                                var tdPatientName = document.createElement('td')
+                                                tdPatientName.append(document.createTextNode(n.patient.name))
+                                                row.append(tdPatientName)
                                                 var tdFecha = document.createElement('td')
                                                 var fecha = n.date.split('T')[0]
                                                 tdFecha.append(document.createTextNode(fecha))
                                                 row.append(tdFecha)
                                                 var tdInicio = document.createElement('td')
-                                                var fecha2 = n.inicio.split('T')[1].substring(0,5);
+                                                var fecha2 = n.date.split('T')[1].substring(0,5);
                                                 tdInicio.append(document.createTextNode(fecha2))
                                                 row.append(tdInicio)
-                                                var tdFin = document.createElement('td')
-                                                var fecha3 = n.fin.split('T')[1].substring(0,5);
-                                                tdFin.append(document.createTextNode(fecha3))
-                                                row.append(tdFin)
                                                 table.append(row)
+                                                }
                                             });
-                                            $('#tablaVisualizacion1').DataTable();
+                                            $('#tablaAsignacion').DataTable();
                                         })
                                         
-                                    </script>                                
+                                    </script>
+                                    
                                 </tbody>
                                 <tfoot class="text-center" style="background: #d78aea; color: black">
-                                    <tr>
+                                    <tr>  
                                         <th>N° Consultorio</th>
                                         <th>Piso</th>
-                                        <th>N° Documento Médico</th>
-                                        <th>Nombre Médico</th>
-                                        <th>Especialidad</th>
+                                        
+                                        <th>N° Documento Paciente</th>
+                                        <th>Nombre Paciente</th>
+                                        
                                         <th>Fecha</th>
-                                        <th>Hora Inicio</th>
-                                        <th>Hora Fin</th>
+                                        <th>Hora</th>
                                     </tr>
-                                </tfoot>
+                                </tfoot>                         
                             </table><br>
                         </div>
                     </div>
-                </div><br>
-            </div>
+                </div>
+            </div>                                
         </main>
 
         <!-- Scripts -->
@@ -113,6 +112,8 @@
             });
         </script>                
         
+
+           
         <footer class="footer" style="position: relative; bottom:0; left: 0; width: 100%; height: 50px; background-color: #16254C;">
             <%-include('../templates/footer.ejs')%>
         </footer>

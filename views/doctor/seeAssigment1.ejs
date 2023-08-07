@@ -28,26 +28,39 @@
                                         <th>Hora Fin</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                <% for(const assignments of data){ %>
-                                    <%if(assignments.assignments.length !=0){%>
-                                        <% for(const v of assignments.assignments){ %>
-                                            <%if(v.documentDoctorId==doc){%>
-                                                <tr>
-                                                    <td><%=assignments.numberOffice%></td>
-                                                    <td><%=assignments.floor%></td>
-                                                    <% var fecha = v.date.split('T')[0] %>
-                                                    
-                                                    <td><%= fecha %></td>
-                                                    <% var fecha2 = v.inicio.split('T')[1].substring(0,5); %>
-                                                    <td><%= fecha2 %></td>
-                                                    <% var fecha3 = v.fin.split('T')[1].substring(0,5); %>
-                                                    <td><%= fecha3 %></td>
-                                                </tr>
-                                            <%}%>
-                                        <%}%>
-                                    <%}%>
-                                <%}%>
+                                <tbody id="tbody2">
+                                    <script>
+                                        var table = document.getElementById('tbody2')
+                                        fetch("https://api-eps-proyecto.vercel.app/assigments").then(resp=>resp.json())
+                                        .then(resp=>{
+                                            console.log(resp)
+                                            resp.data.forEach(n => {
+                                                if(n.documentDoctorId._id == '<%=doc%>'){
+                                                    var row = document.createElement('tr')
+                                                    var tdNumberOffice = document.createElement('td')
+                                                    tdNumberOffice.append(document.createTextNode(n.idOffice.numberOffice))
+                                                    row.append(tdNumberOffice)
+                                                    var tdFloor = document.createElement('td')
+                                                    tdFloor.append(document.createTextNode(n.idOffice.floor))
+                                                    row.append(tdFloor)
+                                                    var tdFecha = document.createElement('td')
+                                                    var fecha = n.date.split('T')[0]
+                                                    tdFecha.append(document.createTextNode(fecha))
+                                                    row.append(tdFecha)
+                                                    var tdInicio = document.createElement('td')
+                                                    var fecha2 = n.inicio.split('T')[1].substring(0,5);
+                                                    tdInicio.append(document.createTextNode(fecha2))
+                                                    row.append(tdInicio)
+                                                    var tdFin = document.createElement('td')
+                                                    var fecha3 = n.fin.split('T')[1].substring(0,5);
+                                                    tdFin.append(document.createTextNode(fecha3))
+                                                    row.append(tdFin)
+                                                    table.append(row)
+                                                }
+                                            });
+                                            $('#tablaVisualizacion').DataTable();
+                                        })
+                                    </script>
                                 </tbody>
                                 <tfoot class="text-center" style="background: #d78aea; color: black">
                                     <tr>
@@ -86,11 +99,7 @@
             });
         </script>                
         
-        <script>
-            $(document).ready(function () {
-                $('#tablaVisualizacion').DataTable();
-            });
-        </script>
+
            
         <footer class="footer" style="position: relative; bottom:0; left: 0; width: 100%; height: 50px; background-color: #16254C;">
             <%-include('../templates/footer.ejs')%>

@@ -15,9 +15,9 @@
                 <nav class="navbar navbar-light" style="background-color: rgba(217, 217, 217, 0.7);">
                     <%-include('../templates/navAdm.ejs', { currentPage: currentPage })%>
                 </nav><br>
-                <h3 style="text-align: center;">Realizar Asignación de Consultorios</h3>
+                <h3 style="text-align: center;">Realizar Asignación de Citas</h3>
                 <div class="col-6" style="text-align: left;">
-                    <button class="btn btn primary" style="background-color: #4C75E6; color: white;" data-bs-toggle="modal" data-bs-target="#modalAsignar">Realizar Nueva Asignación</button>
+                    <button class="btn btn primary" style="background-color: #4C75E6; color: white;" data-bs-toggle="modal" data-bs-target="#modalAsignar">Crear Nueva Cita</button>
                 </div><br>
                 <div class="container">
                     <div class="table-responsive"></div>
@@ -27,12 +27,12 @@
                                     <tr>
                                         <th>N° Consultorio</th>
                                         <th>Piso</th>
-                                        <th>N° Documento Médico</th>
                                         <th>Nombre Médico</th>
+                                        <th>N° Documento Paciente</th>
+                                        <th>Nombre Paciente</th>
                                         <th>Especialidad</th>
                                         <th>Fecha</th>
-                                        <th>Hora Inicio</th>
-                                        <th>Hora Fin</th>
+                                        <th>Hora</th>
                                         <th>Eliminar</th>
                                     </tr>
                                 </thead>
@@ -40,41 +40,41 @@
                                     <script src="./js/scriptsNew.js"> </script>
                                     <script>
                                         var table = document.getElementById('tableBody')
-                                        fetch("https://api-eps-proyecto.vercel.app/assigments").then(resp=>resp.json())
+                                        fetch("https://api-eps-proyecto.vercel.app/appointments").then(resp=>resp.json())
                                         .then(resp=>{
                                             console.log(resp)
                                             resp.data.forEach(n => {
                                                 var row = document.createElement('tr')
                                                 var tdNumberOffice = document.createElement('td')
-                                                tdNumberOffice.append(document.createTextNode(n.idOffice.numberOffice))
+                                                tdNumberOffice.append(document.createTextNode(n.assigment.idOffice.numberOffice))
                                                 row.append(tdNumberOffice)
                                                 var tdFloor = document.createElement('td')
-                                                tdFloor.append(document.createTextNode(n.idOffice.floor))
+                                                tdFloor.append(document.createTextNode(n.assigment.idOffice.floor))
                                                 row.append(tdFloor)
-                                                var tdDocumentDoctor = document.createElement('td')
-                                                tdDocumentDoctor.append(document.createTextNode(n.documentDoctorId.documentId))
-                                                row.append(tdDocumentDoctor)
+                                                
                                                 var tdName = document.createElement('td')
-                                                tdName.append(document.createTextNode(n.documentDoctorId.name))
+                                                tdName.append(document.createTextNode(n.assigment.documentDoctorId.name))
                                                 row.append(tdName)
+                                                var tdPatientDoc = document.createElement('td')
+                                                tdPatientDoc.append(document.createTextNode(n.patient.documentId))
+                                                row.append(tdPatientDoc)
+                                                var tdPatientName = document.createElement('td')
+                                                tdPatientName.append(document.createTextNode(n.patient.name))
+                                                row.append(tdPatientName)
                                                 var tdSpeciality = document.createElement('td')
-                                                tdSpeciality.append(document.createTextNode(n.documentDoctorId.speciality.name))
+                                                tdSpeciality.append(document.createTextNode(n.assigment.documentDoctorId.speciality.name))
                                                 row.append(tdSpeciality)
                                                 var tdFecha = document.createElement('td')
                                                 var fecha = n.date.split('T')[0]
                                                 tdFecha.append(document.createTextNode(fecha))
                                                 row.append(tdFecha)
                                                 var tdInicio = document.createElement('td')
-                                                var fecha2 = n.inicio.split('T')[1].substring(0,5);
+                                                var fecha2 = n.date.split('T')[1].substring(0,5);
                                                 tdInicio.append(document.createTextNode(fecha2))
                                                 row.append(tdInicio)
-                                                var tdFin = document.createElement('td')
-                                                var fecha3 = n.fin.split('T')[1].substring(0,5);
-                                                tdFin.append(document.createTextNode(fecha3))
-                                                row.append(tdFin)
 
                                                 var btDelete = document.createElement('td')
-                                                btDelete.innerHTML = '<button id="btnEliminar" class="btn btn-danger" onclick="eliminarAsignacion('+'\''+n._id+'\''+')">Eliminar</button>'
+                                                btDelete.innerHTML = '<button id="btnEliminar" class="btn btn-danger" onclick="eliminarCita('+'\''+n._id+'\''+')">Eliminar</button>'
                                                 row.append(btDelete)
                                                 table.append(row)
                                             });
@@ -102,62 +102,70 @@
                     </div>
                 </div><br>
             </div>
-            <!-- Modal asignar consultorio -->
+            <!-- Modal asignar cita -->
             <div class="modal fade" id="modalAsignar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Asignar consultorio</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="/assignOffice" method="POST">
-                            <div class="form-group">
-                              <label for="documentoMedico">Documento Médico:</label>
-                              <input type="number" class="form-control" id="documentoMedico" name="documentoMedico" required>
-                            </div>
-                            <div class="form-group">
-                              <label for="numeroConsultorio">Número de Consultorio:</label>
-                              <select type="text" class="form-control" id="numeroConsultorio" name="numeroConsultorio" required>
-                                <script>
-                                    var select = document.getElementById('numeroConsultorio')
-                                    fetch("https://api-eps-proyecto.vercel.app/offices").then(resp=>resp.json())
-                                    .then(resp=>{
-                                        resp.data.forEach(n=>{
-                                            var option = document.createElement('option')
-                                            option.append(document.createTextNode(n.numberOffice))
-                                            select.append(option)
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Asignar cita</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                                <div class="form-group">
+                                <label for="documentoMedico">Documento Paciente:</label>
+                                <input type="number" class="form-control" id="documentoPaciente" name="documentoPaciente" required>
+                                <button class="btn btn-primary" type="button" onclick="searchPatient()">Buscar paciente</button>
+                                </div>
+                                <div class="form-group">
+                                    <label for="documentoMedico">Nombre Paciente:</label>
+                                    <div id="nombrePaciente"></div>
+                                    
+                                </div>
+                                <div class="form-group">
+                                <label for="numeroConsultorio">Especialidad:</label>
+                                <select type="text" class="form-control" id="nombreEspecialidad" name="nombreEspecialidad" onchange="changeDoctors()" required>
+                                    <script>
+                                        var select = document.getElementById('nombreEspecialidad')
+                                        fetch("https://api-eps-proyecto.vercel.app/specialities").then(resp=>resp.json())
+                                        .then(resp=>{
+                                            var option0 = document.createElement('option')
+                                            option0.append(document.createTextNode('Seleccione la especialidad...'))
+                                            select.append(option0)
+                                            resp.data.forEach(n=>{
+                                                var option = document.createElement('option')
+                                                option.append(document.createTextNode(n.name))
+                                                select.append(option)
+                                            })
                                         })
-                                    })
-                                </script>
-                             
-                              </select> 
-                            </div>
-                            <div class="form-group">
-                              <label for="fecha">Fecha:</label>
-                              <input type="date" data-date-format="DD-MM-YYYY" class="form-control" id="fecha" name="fecha" required>
-                            </div>
-                            <div class="form-group">
-                              <label>Turno:</label>
-                              <div class="form-check">
-                                <input class="form-check-input" type="radio" name="turno" id="turno1" value="8-13" required>
-                                <label class="form-check-label" for="turno1">8-13pm</label>
-                              </div>
-                              <div class="form-check">
-                                <input class="form-check-input" type="radio" name="turno" id="turno2" value="13-20" required>
-                                <label class="form-check-label" for="turno2">13-20pm</label>
-                              </div>
-                            </div>
-                          
+                                    </script>
+                                
+                                </select> 
+                                </div>
+                                <div class="form-group">
+                                    <label for="numeroConsultorio">Médico:</label>
+                                    <select type="text" class="form-control" id="nombreMedico" name="nombreMedico" onchange="showDates()" required>
+                                    </select> 
+                                </div>
+                                <div class="form-group">
+                                <label for="fecha">Fecha:</label>
+                                <select type="text" class="form-control" id="fecha" name="fecha" onchange="changeHours()" required>
+                                </select> 
+                                </div>
+                                <div class="form-group">
+                                <label>Turno:</label>
+                                <select type="text" class="form-control" id="hora" name="hora" required></select>
+                                </div>
+                            
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">cerrar</button>
+                            <button type="button" class="btn btn-primary" onclick="saveCita()">Asignar</button>
+                        </div>
+                    
                     </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">cerrar</button>
-                    <button type="submit" class="btn btn-primary" >Asignar</button>
-                </form>
-                    </div>
-                </div>
                 </div>
             </div>
+            
 
             <script>
                 // Obtener la fecha actual
